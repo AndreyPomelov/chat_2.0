@@ -31,7 +31,9 @@ public class Server {
     private DataOutputStream out;
 
     /**
-     * Конструктор
+     * Конструктор.
+     * При создании объекта сервер автоматически запускается
+     * в режим ожидания соединения с клиентской частью.
      */
     public Server() {
         try {
@@ -78,14 +80,16 @@ public class Server {
             String message = in.readUTF();
             System.out.println("Client: " + message);
 
-            // Отправляем клиенту обратно его же сообщение
-            out.writeUTF("Server: " + message);
-
-            // Если пришла команда на отключение, прерываем цикл обмена сообщениями
+            // Если пришла команда на отключение, отправляем клиенту обратно
+            // команду на отключение и прерываем цикл обмена сообщениями
             if (EXIT.equals(message)) {
                 System.out.println("Клиент отключился.");
+                out.writeUTF(EXIT);
                 break;
             }
+
+            // Отправляем клиенту обратно его же сообщение
+            out.writeUTF("Server: " + message);
         }
     }
 }
